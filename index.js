@@ -7,6 +7,22 @@ const http = require('http');
 const url = require('url');
 const { StringDecoder } = require('string_decoder');
 
+// Define the handlers
+const handlers = {
+  sample: (data, callback) => {
+    // Callback a HTTP status code and a payload (object)
+    callback(406, { name: 'sample handler' });
+  },
+  notFound: (data, callback) => {
+    callback(404);
+  },
+};
+
+// Define a request router
+const router = {
+  sample: handlers.sample,
+};
+
 // The server should respond to all requests with a string
 const server = http.createServer((req, res) => {
   if (req.url !== '/favicon.ico') {
@@ -41,18 +57,33 @@ const server = http.createServer((req, res) => {
     req.on('end', () => {
       buffer += decoder.end();
 
-      // Send the response
-      res.end('Hello World\n');
+      // Choose the handler this request should go to
+      // const handler = router[trimmedPath] || router.notFound;
 
-      // Log the request
-      console.log(
-        `Request received on path: ${trimmedPath} with method ${method}`
-      );
+      const handler =
+        typeof router[trimmedPath] !== 'undefined'
+          ? router[trimmedPath]
+          : handlers.notFound;
 
-      // String literals will not show entire object
-      console.log('query string: ', queryStringObject);
-      console.log('headers: ', headers);
-      console.log('Payload: ', buffer);
+      const data = {
+        trimmedPath,
+        queryStringObject,
+        method,
+        headers,
+        payload: buffer,
+      };
+
+      // Route the request to the handler specified in the router
+      handler(data, (_statusCode, _payload) => {
+        // Use the status code called by the handler or default 200
+        const statusCode = typeof _statusCode === 'number' ? _statusCode : 200;
+
+        const payload = typeof _payload === 'object' ? _payload : {};
+        const payloadString = JSON.stringify(payload);
+
+        res.writeHead(statusCode);
+        res.end(payloadString);
+      });
     });
   }
 });
