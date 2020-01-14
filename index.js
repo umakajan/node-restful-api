@@ -31,6 +31,24 @@ const httpsServerOptions = {
   cert: fs.readFileSync('./https/cert.pem'),
 };
 
+const { create, read, update, remove } = require('./lib/data');
+
+create('test', 'newFile', { foo: 'bar' }, err => {
+  console.log('this was the error:', err);
+});
+
+read('test', 'newFile', (err, data) => {
+  console.log(err, data);
+});
+
+update('test', 'newFile', { fizz: 'update' }, (err, data) => {
+  console.log(err, data);
+});
+
+remove('test', 'newFile', err => {
+  console.log(err);
+});
+
 // All the server logic for both the https and https server
 const unifiedServer = (req, res) => {
   if (req.url !== '/favicon.ico') {
