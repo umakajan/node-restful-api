@@ -3,7 +3,7 @@
     "es6": true,
     "node": true
   },
-  "extends": ["prettier", "airbnb-base"],
+  "extends": ["airbnb-base", "prettier"],
   "plugins": ["prettier"],
   "globals": {
     "Atomics": "readonly",
@@ -15,6 +15,7 @@
   },
   "rules": {
     "prettier/prettier": "error",
-    "no-console": "off"
+    "no-console": "off",
+    "comma-dangle": "off"
   }
 }
