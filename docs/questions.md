@@ -12,3 +12,5 @@ const handler =
     ? router[trimmedPath]
     : router.notFound;
 ```
+
+4. What is HTTPS and what is required to add support
