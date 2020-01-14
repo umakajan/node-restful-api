@@ -13,9 +13,8 @@ const config = require('./config');
 
 // Define the handlers
 const handlers = {
-  sample: (data, callback) => {
-    // Callback a HTTP status code and a payload (object)
-    callback(406, { name: 'sample handler' });
+  ping: (data, callback) => {
+    callback(200);
   },
   notFound: (data, callback) => {
     callback(404);
@@ -24,7 +23,7 @@ const handlers = {
 
 // Define a request router
 const router = {
-  sample: handlers.sample,
+  ping: handlers.ping,
 };
 
 const httpsServerOptions = {
